@@ -1,0 +1,17 @@
+body {
+    color: white;
+    padding: 0 16px;
+  }
+
+li:before {
+  content: '• ';
+  width: 3em;
+}
+
+h5 {
+  padding: 10px 0 10px 0;
+}
+
+sp-picker {
+  padding-bottom: 5px;
+} 
