@@ -12,20 +12,20 @@ var strings = {};
 entrypoints.setup({
     panels: {
         vanilla: {
-            show(node) { }
+            show(node) {}
         }
     }
 });
 
 // Shows a file picker dialog and returns the picked file's data as a string
-const openFile = async () => {
+const openFile = async() => {
     const file = await fs.getFileForOpening({ allowMultiple: false });
     const data = await file.read();
     return data;
 };
 
 // Prompts the user to pick a localization file and try to parse its content as JSON.
-const loadStrings = async () => {
+const loadStrings = async() => {
     try {
         const data = await openFile();
         strings = JSON.parse(data);
@@ -60,97 +60,111 @@ const getCurrentNumberOfScreenshots = () => {
 // When encoutering one, checks if the layer name is a defined localization
 // key for the current language, surrounded by square brackets.
 // If so, replaces the text layer's content with the localization.
-const localizeGroup = async (group) => {
+const localizeGroup = async(group) => {
 
     const locale = getCurrentLocale();
 
-    await photoshop.core.executeAsModal(async () => {
+    for (var i = 0; i < group.layers.length; i++) {
 
-        for (var i = 0; i < group.layers.length; i++) {
+        const layer = group.layers[i];
 
-            const layer = group.layers[i];
+        if (layer.kind === 'group') {
+            await localizeGroup(layer);
+        } else if (layer.kind === 'text' && layer.visible) {
 
-            if (layer.kind === 'group') {
-                await localizeGroup(layer);
-            } else if (layer.kind === 'text' && layer.visible) {
+            if (layer.name.startsWith('[') && layer.name.endsWith(']')) {
 
-                if (layer.name.startsWith('[') && layer.name.endsWith(']')) {
+                const keyName = layer.name.substring(1, layer.name.length - 1);
 
-                    const keyName = layer.name.substring(1, layer.name.length - 1);
+                if (Object.keys(strings[locale]).includes(keyName)) {
 
-                    if (Object.keys(strings[locale]).includes(keyName)) {
+                    try {
 
-                        try {
+                        console.warn(`Localizing layer "${keyName}"" to "${strings[locale][keyName]}"`);
+                        console.warn(`Existing contents = "${layer.textItem.contents}"`);
 
-                            console.warn(`Localizing layer "${keyName}"" to "${strings[locale][keyName]}"`);
-                            console.warn(`Existing contents = "${layer.textItem.contents}"`);
+                        // Store the original position and size
+                        var originalBounds = layer.bounds;
 
-                            // Store the original position and size
-                            var originalBounds = layer.bounds;
+                        // Get the matching localization
+                        const localization = strings[locale][keyName];
 
-                            // Get the matching localization
-                            const localization = strings[locale][keyName];
+                        // Update the layer's text with the rich localization
+                        await setRichTextForLayer(localization, layer);
 
-                            // Update the layer's text with the rich localization
-                            await setRichTextForLayer(localization, layer);
+                        // TODO: Use batchPlay to set the font in different ranges
+                        // Check example here: https://github.com/AdobeDocs/uxp-photoshop-plugin-samples/blob/main/layer-creation-js-sample/index.js 
 
-                            // TODO: Use batchPlay to set the font in different ranges
-                            // Check example here: https://github.com/AdobeDocs/uxp-photoshop-plugin-samples/blob/main/layer-creation-js-sample/index.js 
+                        // Restore the original bounds (position and size)
+                        layer.bounds = originalBounds;
 
-                            // Restore the original bounds (position and size)
-                            layer.bounds = originalBounds;
-
-                        } catch (error) {
-                            console.error(error);
-                        }
-
+                    } catch (error) {
+                        console.error(error);
                     }
+
                 }
             }
         }
-
-    });
+    }
 
 };
 
-const localize = async () => {
+const localize = async() => {
 
-    await photoshop.core.executeAsModal(async () => {
-
-        await localizeGroup(app.activeDocument);
-
-    });
+    await localizeGroup(app.activeDocument);
 
 }
 
+// Modally executes a batchPlay command with the given commands and options
+const batchPlay = async(commands, options) => {
+
+    try {
+        const result = await photoshop.core.executeAsModal(async() => {
+            try {
+                const result = await action.batchPlay(commands, options);
+                return result;
+            } catch (error) {
+                console.error('Failed to execute batch action:');
+                console.error(error);
+            }
+        });
+
+        return result;
+
+    } catch (error) {
+        console.error('Failed to execute batch action:');
+        console.error(error);
+    }
+
+    return;
+
+};
+
 // Returns the layer's properties using batchPlay
-const getPropertiesForLayer = async (layer) => {
+const getPropertiesForLayer = async(layer) => {
 
     let command = {
-        "_obj": "multiGet",
-        "_target": [{
-            "_ref": "textLayer",
-            "_id": layer.id
+        _obj: "multiGet",
+        _target: [{
+            _ref: "textLayer",
+            _id: layer.id
         }],
-        "extendedReference": [
+        extendedReference: [
             ["antiAlias", "boundingBox", "bounds", "kerningRange", "orientation", "paragraphStyleRange", "textGridding", "textKey", "textShape", "textStyleRange", "warp"]
         ],
-        "options": {
-            "failOnMissingProperty": false,
-            "failOnMissingElement": false
+        options: {
+            failOnMissingProperty: false,
+            failOnMissingElement: false
         }
     };
 
     try {
-        const result = await action.batchPlay([command], {});
-
-        //console.warn('Properties for layer with id', layer.id, ':');
-        //console.warn(JSON.stringify(result));
-
+        const result = await batchPlay([command], {
+            synchronousExecution: true
+        });
         return result[0];
-
     } catch (error) {
-        console.error('Failed to execute batch action:');
+        console.error('Failed to get properties:');
         console.error(error);
     }
 
@@ -159,7 +173,7 @@ const getPropertiesForLayer = async (layer) => {
 // Performs a batch action to replace the text content of the given layer
 // with a rich text whose bold segments are delimited by '**' markers,
 // as in Markdown style.
-const setRichTextForLayer = async (text, layer) => {
+const setRichTextForLayer = async(text, layer) => {
 
     var properties = await getPropertiesForLayer(layer);
 
@@ -213,37 +227,47 @@ const setRichTextForLayer = async (text, layer) => {
     console.warn(JSON.stringify(command));
 
     try {
-        await action.batchPlay([command], {});
+        await batchPlay([command], {});
     } catch (error) {
-        console.error('Failed to execute batch action:');
+        console.error('Failed to set rich text :');
         console.error(error);
     }
 }
 
 
 
-const cropDocument = async (screenshotIndex) => {
+const cropDocument = async(screenshotIndex) => {
 
     const document = photoshop.app.activeDocument;
 
-    const documentWidth = document.width, documentHeight = document.height;
+    const documentWidth = document.width,
+        documentHeight = document.height;
 
     const screenshotWidth = documentWidth / getCurrentNumberOfScreenshots();
 
+    const left = screenshotIndex * screenshotWidth;
+
     const bounds = {
-        left: screenshotIndex * screenshotWidth,
+        left: left,
         top: 0,
-        right: ((getCurrentNumberOfScreenshots() - screenshotIndex - 1) * screenshotWidth),
-        bottom: 0
+        right: left + screenshotWidth,
+        bottom: documentHeight
     };
 
-    console.warn('Cropping document with bounds:');
-    console.warn(JSON.stringify(bounds));
+    // console.warn('Cropping document with bounds:');
+    // console.warn(JSON.stringify(bounds));
 
     try {
-        await photoshop.core.executeAsModal(async () => {
-            await document.crop(bounds, 0, screenshotWidth, documentHeight);
-            await (new Promise(resolve => setTimeout(resolve, 2000)));
+        await photoshop.core.executeAsModal(async() => {
+            try {
+                const result = await document.crop(bounds, 0, screenshotWidth, documentHeight);
+                console.warn('Crop result:');
+                console.warn(JSON.stringify(result));
+            } catch (error) {
+                console.error('Failed to crop document:');
+                console.error(error);
+            }
+
         });
     } catch (error) {
         console.error('Failed to crop document:');
@@ -254,39 +278,112 @@ const cropDocument = async (screenshotIndex) => {
 
 }
 
-const saveAs = async (screenshotIndex) => {
+const saveAs = async(screenshotIndex, folder) => {
 
-    // TODO:
+    try {
 
-    const document = photoshop.app.activeDocument;
+        const document = photoshop.app.activeDocument;
 
-    const locale = getCurrentLocale();
+        const locale = getCurrentLocale();
 
-    const folder = await fs.getFolder();
+        const entry = await folder.createEntry(`${locale.toUpperCase()}_${screenshotIndex + 1}.jpg`, { overwrite: true });
 
-    const entry = await folder.createEntry(`${locale}_${screenshotIndex}.jpg`, { overwrite: true });
+        await photoshop.core.executeAsModal(async() => {
+            try {
+                await document.saveAs.jpg(entry, { quality: 12 });
+            } catch (error) {
+                console.error('Failed to save document:');
+                console.error(error);
+            }
+        });
 
-    await document.saveAs.jpg(entry, { quality: 12 });
+    } catch (error) {
+        console.error('Failed to save document:');
+        console.error(error);
+    }
 
     return;
 
 }
 
-const cropAndSave = async () => {
+// Makes a snapshot of the document, naming the snapshot with the given name.
+const makeSnapshot = async(name) => {
+    const result = await batchPlay(
+        [{
+            _obj: "make",
+            _target: [{
+                _ref: "snapshotClass",
+            }, ],
+            from: {
+                _ref: "historyState",
+                _property: "currentHistoryState",
+            },
+            name: name,
+            using: {
+                _enum: "historyState",
+                _value: "fullDocument",
+            },
+            _isCommand: true,
+            _options: {},
+        }, ], {
+            synchronousExecution: true,
+        }
+    );
+
+    return result;
+};
+
+const revertToSnapshot = async(name) => {
+    const result = await batchPlay(
+        [{
+            _obj: "select",
+            _target: [{
+                _ref: "snapshotClass",
+                _name: name,
+            }, ],
+            _isCommand: true,
+            _options: {
+                dialogOptions: "dontDisplay",
+            },
+        }, ], {
+            synchronousExecution: true,
+        }
+    );
+
+    return result;
+};
+
+const cropAndSave = async() => {
+
+    const folder = await fs.getFolder();
+
+    const initialSnapshotName = 'initialState';
+
+    await makeSnapshot(initialSnapshotName);
 
     for (var i = 0; i < getCurrentNumberOfScreenshots(); i++) {
 
-        console.warn('Processing screenshot ' + i);
+        const index = i + 1;
+
+        console.warn(`Processing screenshot ${index}...`);
 
         await cropDocument(i);
-        await saveAs(i);
+
+        console.warn(`Cropped ${index}, saving...`);
+
+        await saveAs(i, folder);
+
+        console.warn(`Saved ${index}, reverting document...`);
+
+        await revertToSnapshot(initialSnapshotName);
+
+        console.warn(`Successfully processed screenshot ${index}`);
 
     }
 
     console.warn('Finished processing screenshots');
 
 }
-
 
 document.getElementById("load-strings-button").addEventListener("click", loadStrings);
 document.getElementById("localize-button").addEventListener("click", localize);
