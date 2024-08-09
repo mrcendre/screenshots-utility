@@ -12,23 +12,35 @@ var strings = {};
 entrypoints.setup({
     panels: {
         vanilla: {
-            show(node) {}
+            show(node) { }
         }
     }
 });
 
 // Shows a file picker dialog and returns the picked file's data as a string
-const openFile = async() => {
+const openFile = async () => {
     const file = await fs.getFileForOpening({ allowMultiple: false });
     const data = await file.read();
     return data;
 };
 
 // Prompts the user to pick a localization file and try to parse its content as JSON.
-const loadStrings = async() => {
+const loadStrings = async () => {
     try {
         const data = await openFile();
         strings = JSON.parse(data);
+
+        if (Object.keys(strings).length > 0) {
+
+            document.getElementById("localize-button").removeAttribute('disabled');
+            document.getElementById("language-picker").removeAttribute('disabled');
+            document.getElementById("screenshots-amount-input").removeAttribute('disabled');
+            document.getElementById("crop-save-button").removeAttribute('disabled');
+
+            // TODO: Update the language picker with values that are available in the JSON localization file
+            //document.getElementById("language-picker").innerHTML = Object.keys(strings).map(locale => `<option value="${locale}">${locale}</option>`).join('');
+        }
+
     } catch (error) {
         alert(`An error occured while trying to parse the data: ${error}`);
     }
@@ -39,15 +51,20 @@ const getCurrentLocale = () => {
     return document.getElementById('language-picker').value;
 };
 
+// Returns the currently selected language to work with
+const getCurrentNumberOfScreenshots = () => {
+    return parseInt(document.getElementById('screenshots-amount-input').value);
+};
+
 // Recursively checks all layers of the group to find text layers.
 // When encoutering one, checks if the layer name is a defined localization
 // key for the current language, surrounded by square brackets.
 // If so, replaces the text layer's content with the localization.
-const localizeGroup = async(group) => {
+const localizeGroup = async (group) => {
 
     const locale = getCurrentLocale();
 
-    await photoshop.core.executeAsModal(async() => {
+    await photoshop.core.executeAsModal(async () => {
 
         for (var i = 0; i < group.layers.length; i++) {
 
@@ -96,9 +113,9 @@ const localizeGroup = async(group) => {
 
 };
 
-const localize = async() => {
+const localize = async () => {
 
-    await photoshop.core.executeAsModal(async() => {
+    await photoshop.core.executeAsModal(async () => {
 
         await localizeGroup(app.activeDocument);
 
@@ -107,7 +124,7 @@ const localize = async() => {
 }
 
 // Returns the layer's properties using batchPlay
-const getPropertiesForLayer = async(layer) => {
+const getPropertiesForLayer = async (layer) => {
 
     let command = {
         "_obj": "multiGet",
@@ -142,7 +159,7 @@ const getPropertiesForLayer = async(layer) => {
 // Performs a batch action to replace the text content of the given layer
 // with a rich text whose bold segments are delimited by '**' markers,
 // as in Markdown style.
-const setRichTextForLayer = async(text, layer) => {
+const setRichTextForLayer = async (text, layer) => {
 
     var properties = await getPropertiesForLayer(layer);
 
@@ -203,8 +220,83 @@ const setRichTextForLayer = async(text, layer) => {
     }
 }
 
+
+
+const cropDocument = async (screenshotIndex) => {
+
+    const document = photoshop.app.activeDocument;
+
+    const documentWidth = document.width, documentHeight = document.height;
+
+    const screenshotWidth = documentWidth / getCurrentNumberOfScreenshots();
+
+    const bounds = {
+        left: screenshotIndex * screenshotWidth,
+        top: 0,
+        right: ((getCurrentNumberOfScreenshots() - screenshotIndex - 1) * screenshotWidth),
+        bottom: 0
+    };
+
+    console.warn('Cropping document with bounds:');
+    console.warn(JSON.stringify(bounds));
+
+    try {
+        await photoshop.core.executeAsModal(async () => {
+            await document.crop(bounds, 0, screenshotWidth, documentHeight);
+            await (new Promise(resolve => setTimeout(resolve, 2000)));
+        });
+    } catch (error) {
+        console.error('Failed to crop document:');
+        console.error(error);
+    }
+
+    return;
+
+}
+
+const saveAs = async (screenshotIndex) => {
+
+    // TODO:
+
+    const document = photoshop.app.activeDocument;
+
+    const locale = getCurrentLocale();
+
+    const folder = await fs.getFolder();
+
+    const entry = await folder.createEntry(`${locale}_${screenshotIndex}.jpg`, { overwrite: true });
+
+    await document.saveAs.jpg(entry, { quality: 12 });
+
+    return;
+
+}
+
+const cropAndSave = async () => {
+
+    for (var i = 0; i < getCurrentNumberOfScreenshots(); i++) {
+
+        console.warn('Processing screenshot ' + i);
+
+        await cropDocument(i);
+        await saveAs(i);
+
+    }
+
+    console.warn('Finished processing screenshots');
+
+}
+
+
 document.getElementById("load-strings-button").addEventListener("click", loadStrings);
 document.getElementById("localize-button").addEventListener("click", localize);
+document.getElementById("crop-save-button").addEventListener("click", cropAndSave);
+
+document.getElementById("localize-button").setAttribute('disabled', true);
+document.getElementById("language-picker").setAttribute('disabled', true);
+document.getElementById("screenshots-amount-input").setAttribute('disabled', true);
+document.getElementById("crop-save-button").setAttribute('disabled', true);
+
 
 // Adds a global event listener to see what actions are being performed at low-level
 // photoshop.action.addNotificationListener(['all'], (event, descriptor) => {console.warn("Event:" + event + " Descriptor: " + JSON.stringify(descriptor))});
