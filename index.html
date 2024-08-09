@@ -1,27 +1,33 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <script src="main.js"></script> 
-    <link rel="stylesheet" href="style.css">   
+    <script src="main.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-  <h1>Screenshots</h1>
-  <h5>1. Load localization data</h5>
-  <sp-button id="load-strings-button">Load strings</sp-button>
-  <h5>2. Localize texts</h5>
-  <sp-picker id="language-picker" placeholder="Select language" size="s">
-    <sp-menu slot="options">
-      <sp-menu-item value="en" selected=true>English</sp-menu-item>
-      <sp-menu-item value="fr">French</sp-menu-item>
-      <sp-menu-item value="es">Spanish</sp-menu-item>
-      <sp-menu-item value="hi">Hindi</sp-menu-item>
-    </sp-menu>
-  </sp-picker>
-  <sp-button id="localize-button">Localize</sp-button>
-  <h5>3. Crop and save</h5>
-  <p>How many screenshots are you exporting ?</p>
-  <input id="screenshots-amount-input" value="5" width="50px" style="float:right;"></input>
-  <br />
-  <sp-button id="crop-save-button">Crop & Save</sp-button>
+    <h1>Screenshots</h1>
+
+    <!-- TODO: Add preliminary tool : automatically "Create Guides" ! -->
+
+    <h5>1. Load localization data</h5>
+    <sp-button id="load-strings-button">Load strings</sp-button>
+    <h5>2. Localize texts</h5>
+    <sp-picker id="language-picker" placeholder="Select language" size="s">
+        <sp-menu slot="options">
+            <sp-menu-item value="en" selected=true>English</sp-menu-item>
+            <sp-menu-item value="fr">French</sp-menu-item>
+            <sp-menu-item value="es">Spanish</sp-menu-item>
+            <sp-menu-item value="hi">Hindi</sp-menu-item>
+        </sp-menu>
+    </sp-picker>
+    <sp-button id="localize-button">Localize</sp-button>
+    <h5>3. Crop and save</h5>
+    <p>How many screenshots are you exporting ?</p>
+    <input id="screenshots-amount-input" value="5" width="50px" style="float:right;"></input>
+    <br />
+    <sp-button id="crop-save-button">Crop & Save</sp-button>
 </body>
+
 </html>
