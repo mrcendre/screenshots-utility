@@ -8,6 +8,11 @@ li:before {
   width: 3em;
 }
 
+p {
+  font-size: 1.2em;
+  padding-bottom: 10px;
+}
+
 h5 {
   padding: 10px 0 10px 0;
 }
@@ -15,3 +20,20 @@ h5 {
 sp-picker {
   padding-bottom: 5px;
 } 
+
+h1, h3 {
+  padding: 10px 0 10px 0;
+  margin: 0;
+}
+
+input {
+  display: inline-block;
+  margin: 0;
+  
+}
+
+#screenshots-amount {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

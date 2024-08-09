@@ -11,23 +11,39 @@
 
     <!-- TODO: Add preliminary tool : automatically "Create Guides" ! -->
 
+    <h3>Design</h3>
+
+    <div id="screenshots-amount">
+      <p style="width: 60%; display: inline-block;">How many screenshots are we creating ?</p>
+      <input id="screenshots-amount-input" value="5" width="50px" style="float:right;"></input>
+    </div>
+    <sp-button id="create-guides-button">Create Guides</sp-button>
+    <br/>
+
+    <h3>Localization</h3>
+
+    <p>Load localizations from a JSON file and automatically replace rich texts for relevant layers.</p>
+
     <h5>1. Load localization data</h5>
     <sp-button id="load-strings-button">Load strings</sp-button>
+
     <h5>2. Localize texts</h5>
-    <sp-picker id="language-picker" placeholder="Select language" size="s">
-        <sp-menu slot="options">
-            <sp-menu-item value="en" selected=true>English</sp-menu-item>
-            <sp-menu-item value="fr">French</sp-menu-item>
-            <sp-menu-item value="es">Spanish</sp-menu-item>
-            <sp-menu-item value="hi">Hindi</sp-menu-item>
-        </sp-menu>
-    </sp-picker>
+    <div id="language-picker-container">
+      <sp-picker id="language-picker" placeholder="Select a language..." size="m">
+          <sp-menu slot="options">
+          </sp-menu>
+      </sp-picker>
+    </div>
     <sp-button id="localize-button">Localize</sp-button>
-    <h5>3. Crop and save</h5>
-    <p>How many screenshots are you exporting ?</p>
-    <input id="screenshots-amount-input" value="5" width="50px" style="float:right;"></input>
-    <br />
+
+    <br/>
+
+    <h3>Export</h3>
+
+    <p>Automatically crop individual screenshots and save them as JPEG.</h5>
+    <br/>
     <sp-button id="crop-save-button">Crop & Save</sp-button>
-</body>
+
+  </body>
 
 </html>
