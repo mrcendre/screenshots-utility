@@ -25,9 +25,16 @@ const enable = () => {
 // Returns the currently selected language to work with
 const getCurrentLocale = () => {
 
+    const options = document.getElementById('language-picker').children.item(0);
+
+    // If the language picker is not currently available, return null
+    if (options.children.length === 0) {
+        return null;
+    }
+
     var selected;
 
-    document.getElementById('language-picker').children.item(0).children.forEach(item => {
+    options.children.forEach(item => {
         if (item.selected) {
             selected = item;
         }

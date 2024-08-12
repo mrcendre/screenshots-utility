@@ -105,7 +105,7 @@ document.getElementById("screenshots-amount-input").addEventListener("input", ()
 // ... and update its initial state.
 ui.updateMeasurements();
 
-ui.disable({ except: ['load-strings-button', 'screenshots-amount-input', 'create-guides-button'] });
+ui.disable({ except: ['load-strings-button', 'screenshots-amount-input', 'create-guides-button', 'crop-save-button'] });
 
 // Adds a global event listener to see what actions are being performed at low-level
 // photoshop.action.addNotificationListener(['all'], (event, descriptor) => {console.warn("Event:" + event + " Descriptor: " + JSON.stringify(descriptor))});
