@@ -13,6 +13,30 @@ Replace texts by their localized counterparts, crop and save screenshots in a si
   </div>
 </div>
 
+### Installation
+
+You can either install the plugin's latest packaged version, or install it in debug mode.
+
+#### <ins>Packaged plugin</ins>
+
+1. Go to the <a href="https://github.com/mrcendre/screenshots-utility/releases">Release page</a> and download the plugin's latest version.
+
+2. Open the `.ccx` file. This will open the Creative Cloud app and prompt you to install the plugin.
+
+> **Note**: You may need to ignore warnings about unverified extensions, since it is not published on the marketplace.
+
+#### <ins>Develop</ins>
+
+1. Download the plugin's source code
+   
+2. Install and open the <a href="https://developer.adobe.com/photoshop/uxp/2022/guides/devtool/">Adobe UXP Developer Tools</a>
+
+3. Click on the "Add Plugin" button
+
+4. Select the `manifest.json` file at the project's root. This will create a new row for the plugin.
+
+5. Within that row, click the "Load" button, or "Load & Watch" if you want to make live modifications to the plugin.
+
 ### Usage
 
 Most of the plugin's features are based on the number of screenshots you are expecting to output from your composition. Use the text field to specify how many screenshots you want to create.
