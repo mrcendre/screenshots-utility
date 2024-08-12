@@ -1,49 +1,33 @@
-<style>
+## Screenshots Utility
 
-  .plugin-ui {
-    display: flex; 
-    justify-content: space-between; 
-    margin-bottom: 20px;
-  }
-
-  .plugin-ui img {
-    margin:25px 25px 0 0; 
-    float:right; 
-    width:190px;
-    height: 421px;
-    object-fit: contain;
-  }
-
-</style>
-
-<div class="plugin-ui">
-  <img src="assets/plugin-ui.png" alt="The plugin's user interface">
+<div class="plugin-ui" style="margin-bottom: 20px; position:relative; z-index:100000;">
+  <img src="assets/plugin-ui.png" align="right" alt="The plugin's user interface" style="margin:25px 0px 250px 0; width:250px; height: 554px; object-fit: contain;">
   <div>
 
-## Introduction
+### Introduction
 
-**Screenshots Utility** automates a lot of redundant work when manually localizing, cropping and saving multiple screenshots from a single Photoshop© composition.
+**Screenshots Utility** is an <a href="https://developer.adobe.com/photoshop/uxp/2022/ps_reference/">UXP plugin</a> automates a lot of redundant work when manually localizing, cropping and saving multiple screenshots from a single Photoshop© composition.
 
 Replace texts by their localized counterparts, crop and save screenshots in a single click.
 
-## Usage
+  </div>
+</div>
+
+### Usage
 
 Most of the plugin's features are based on the number of screenshots you are expecting to output from your composition. Use the text field to specify how many screenshots you want to create.
 
 The final screenshot size is dynamically calculated and displayed in the plugin's panel, so you can make sure it matches the application store's screenshot size specifications, for the <a href="https://developer.apple.com/help/app-store-connect/reference/screenshot-specifications/">Apple App Store</a> or the <a href="https://support.google.com/googleplay/android-developer/answer/9866151#zippy=screenshots">Google Play Store</a> for example.
 
-  </div>
-</div>
-
-## Design
+#### <ins>Design</ins>
 
 The "**Create Guides**" feature automatically creates guides for each screenshot, based on the number of screenshots you want to output. 
 
 This is very useful to help you align your content across the various expected screenshots bounds and to project how your composition will be cropped. 
 
-## Localization
+#### <ins>Localization</ins>
 
-1. Localizations must be written in a JSON file, with the following structure:
+1. Localizations must be written in a JSON file complying with the structure below.
 
     ```json
     {
@@ -54,7 +38,7 @@ This is very useful to help you align your content across the various expected s
     }
     ```
 
-    For example :
+    Bold portions of localized texts may be specified using the `**` delimiter. For example :
 
     ```json
     {
@@ -82,7 +66,7 @@ This is very useful to help you align your content across the various expected s
 5. Click "**Localize**" and watch the magic happen. 
 
 
-## Cropping and saving
+#### <ins>Cropping and saving</ins>
 
 1. Ensure the composition's width is a multiple of the final screenshot's expected width, since the plugin will perform a simple division to crop the screenshots.
 
@@ -90,11 +74,11 @@ This is very useful to help you align your content across the various expected s
 
 3. Click "**Crop & Save**", select the output folder and watch the magic happen. 
 
-## Compatibility
+### Compatibility
 
 This plugin was developed and tested on Photoshop 2024 (version 23.0.0).
 
-## Roadmap
+### Roadmap
 
 - [X] Automatically create guides
 - [X] Load localizations from a JSON file
@@ -106,12 +90,12 @@ This plugin was developed and tested on Photoshop 2024 (version 23.0.0).
 - [ ] Dynamically replace embedded app screenshots with localized versions
 
 
-## Documentation
+### Documentation
 
 * Read more about creating and debugging plugins using the UDT application [here](https://developer.adobe.com/photoshop/uxp/2022/guides/devtool/udt-walkthrough/). 
 * We build on this starter template and show you how to [edit a document](https://developer.adobe.com/photoshop/uxp/2022/guides/getting-started/editing-the-document/) and [write a file](https://developer.adobe.com/photoshop/uxp/2022/guides/getting-started/writing-a-file/) using UXP. 
 
 
-## Credits
+### Credits
 
 This plugin was developed with ♥ by [@mrcendre](https://cendre.me/).
