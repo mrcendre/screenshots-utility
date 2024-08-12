@@ -17,7 +17,7 @@ entrypoints.setup({
     }
 });
 
-
+// The action to perform when the user clicks the "Create Guides" button
 const createGuides = async () => {
 
     await createGuide("horizontal", 0);
@@ -33,8 +33,6 @@ const createGuides = async () => {
 
     }
 }
-
-
 
 // The action to perform when the user clicks the "Localize" button
 const localize = async () => {
@@ -89,7 +87,7 @@ const cropAndSave = async () => {
 
     await snapshot.remove(initialSnapshotName);
 
-    // Put back the UI
+    // Re-enable back the UI
     ui.enable();
 
 }
