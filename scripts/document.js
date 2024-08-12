@@ -124,7 +124,7 @@ const saveAs = async (screenshotIndex, locale, folder) => {
 
         await photoshop.core.executeAsModal(async () => {
             try {
-                await document.saveAs.jpg(entry, { quality: 12 });
+                await document.saveAs.jpg(entry, { quality: 12 }, true);
             } catch (error) {
                 console.error('Failed to save document:');
                 console.error(error);
