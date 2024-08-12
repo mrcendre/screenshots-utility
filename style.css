@@ -19,7 +19,13 @@ h5 {
 
 sp-picker {
   padding-bottom: 5px;
-} 
+}
+
+strong {
+  color:white;
+  /* font-weight: bold; */
+  font-size: 1.05em;
+}
 
 h1, h3 {
   padding: 10px 0 10px 0;
@@ -29,11 +35,15 @@ h1, h3 {
 input {
   display: inline-block;
   margin: 0;
-  
 }
 
-#screenshots-amount {
+#screenshots-amount, #final-size-container, #composition-size-container {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
+}
+
+#final-size-container #final-size, #composition-size-container #composition-size {
+  font-size: 1.2em;
+  color:rgba(255, 255, 255, 0.7);
 }
