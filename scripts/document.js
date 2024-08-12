@@ -115,7 +115,12 @@ const saveAs = async (screenshotIndex, locale, folder) => {
 
         const document = photoshop.app.activeDocument;
 
-        const entry = await folder.createEntry(`${locale.toUpperCase()}_${screenshotIndex + 1}.jpg`, { overwrite: true });
+        var filename = `screenshot_${screenshotIndex + 1}.jpg`;
+
+        // If the locale is set, we'll use this instead as a prefix for the filename
+        if (locale) filename = `${locale.toUpperCase()}_${screenshotIndex + 1}.jpg`;
+
+        const entry = await folder.createEntry(filename, { overwrite: true });
 
         await photoshop.core.executeAsModal(async () => {
             try {
