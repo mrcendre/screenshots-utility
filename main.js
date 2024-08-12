@@ -99,6 +99,14 @@ document.getElementById("load-strings-button").addEventListener("click", strings
 document.getElementById("localize-button").addEventListener("click", localize);
 document.getElementById("crop-save-button").addEventListener("click", cropAndSave);
 
+// Update the screenshot size when the user changes the amount
+document.getElementById("screenshots-amount-input").addEventListener("input", () => {
+    ui.updateMeasurements();
+});
+
+// ... and update its initial state.
+ui.updateMeasurements();
+
 ui.disable({ except: ['load-strings-button', 'screenshots-amount-input', 'create-guides-button'] });
 
 // Adds a global event listener to see what actions are being performed at low-level

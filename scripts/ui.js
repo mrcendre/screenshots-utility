@@ -1,3 +1,5 @@
+const photoshop = require('photoshop');
+
 // DOM identifiers of user interation components
 const components = ['load-strings-button', 'localize-button', 'language-picker', 'screenshots-amount-input', 'crop-save-button', 'create-guides-button'];
 
@@ -39,4 +41,45 @@ const getCurrentNumberOfScreenshots = () => {
     return parseInt(document.getElementById('screenshots-amount-input').value);
 }
 
-module.exports = { enable, disable, getCurrentLocale, getCurrentNumberOfScreenshots };
+// Updates the text value indication the final size of the screenshots
+const updateMeasurements = () => {
+
+    const compositionWidth = photoshop.app.activeDocument.width,
+        compositionHeight = photoshop.app.activeDocument.height;
+
+    const total = getCurrentNumberOfScreenshots();
+
+    if (total && isRoundInteger(total)) {
+        document.getElementById('final-size').innerHTML = `<strong>${compositionWidth / total}</strong> × <strong>${compositionHeight}</strong> px`;
+    } else {
+        document.getElementById('final-size').textContent = '-';
+    }
+
+    document.getElementById('composition-size').innerHTML = `<strong>${compositionWidth}</strong> × <strong>${compositionHeight}</strong> px`;
+
+};
+
+// Checks whether a value is an integer
+const isRoundInteger = (value) => {
+    // Helper function to determine if a value is an integer
+    function isInteger(num) {
+        return Number.isInteger(num);
+    }
+
+    // Check if the value is a number and is an integer
+    if (typeof value === 'number') {
+        return isInteger(value);
+    }
+
+    // Check if the value is a string and try to parse it as an integer
+    if (typeof value === 'string') {
+        const parsedValue = parseInt(value, 10);
+        // Check if parsing was successful and if the parsed value is an integer
+        return !isNaN(parsedValue) && isInteger(parsedValue);
+    }
+
+    // If the value is neither a number nor a string, return false
+    return false;
+}
+
+module.exports = { enable, disable, getCurrentLocale, getCurrentNumberOfScreenshots, updateMeasurements };
