@@ -22,43 +22,43 @@ const getDestinationFolder = async () => {
 const createGuide = async (orientation, position) => {
 
     const command = {
-        "_obj": "make",
-        "_target": [
+        _obj: 'make',
+        _target: [
             {
-                "_ref": "good"
+                _ref: 'good'
             }
         ],
-        "guideTarget": {
-            "_enum": "guideTarget",
-            "_value": "guideTargetCanvas"
+        guideTarget: {
+            _enum: 'guideTarget',
+            _value: 'guideTargetCanvas'
         },
-        "new": {
-            "$GdCA": 0,
-            "$GdCB": 0,
-            "$GdCG": 0,
-            "$GdCR": 255,
-            "_obj": "good",
-            "_target": [
+        new: {
+            $GdCA: 0,
+            $GdCB: 0,
+            $GdCG: 0,
+            $GdCR: 255,
+            _obj: 'good',
+            _target: [
                 {
-                    "_id": photoshop.app.activeDocument.id,
-                    "_ref": "document"
+                    _id: photoshop.app.activeDocument.id,
+                    _ref: 'document'
                 },
                 {
-                    "_index": 9,
-                    "_ref": "good"
+                    _index: 9,
+                    _ref: 'good'
                 }
             ],
-            "kind": {
-                "_enum": "kind",
-                "_value": "document"
+            kind: {
+                _enum: 'kind',
+                _value: 'document'
             },
-            "orientation": {
-                "_enum": "orientation",
-                "_value": orientation
+            orientation: {
+                _enum: 'orientation',
+                _value: orientation
             },
-            "position": {
-                "_unit": "pixelsUnit",
-                "_value": position
+            position: {
+                _unit: 'pixelsUnit',
+                _value: position
             }
         }
     };

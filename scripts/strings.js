@@ -39,12 +39,12 @@ const load = async () => {
 
         if (Object.keys(all).length > 0) {
 
-            document.getElementById("localize-button").removeAttribute('disabled');
-            document.getElementById("language-picker").removeAttribute('disabled');
-            document.getElementById("screenshots-amount-input").removeAttribute('disabled');
-            document.getElementById("crop-save-button").removeAttribute('disabled');
+            document.getElementById('localize-button').removeAttribute('disabled');
+            document.getElementById('language-picker').removeAttribute('disabled');
+            document.getElementById('screenshots-amount-input').removeAttribute('disabled');
+            document.getElementById('crop-save-button').removeAttribute('disabled');
 
-            document.getElementById("language-picker").remove();
+            document.getElementById('language-picker').remove();
 
             var picker = document.createElement('sp-picker');
             picker.setAttribute('id', 'language-picker');
@@ -73,7 +73,7 @@ const load = async () => {
 
             picker.appendChild(menu);
 
-            document.getElementById("language-picker-container").appendChild(picker);
+            document.getElementById('language-picker-container').appendChild(picker);
 
             // If needed: Setup the event listeners for the language picker items
             // Object.keys(all).forEach(locale => {

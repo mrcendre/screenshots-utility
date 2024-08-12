@@ -26,7 +26,7 @@ const localizeGroup = async (group) => {
                 if (strings.get(locale, keyName)) {
 
                     try {
-                        // console.warn(`Localizing layer "${keyName}"" to "${strings.get(locale, keyName)}"`);
+                        // console.warn(`Localizing layer "${keyName}" to "${strings.get(locale, keyName)}"`);
                         // console.warn(`Existing contents = "${layer.textItem.contents}"`);
 
                         // Store the original position and size
@@ -55,13 +55,13 @@ const localizeGroup = async (group) => {
 const getPropertiesForLayer = async (layer) => {
 
     let command = {
-        _obj: "multiGet",
+        _obj: 'multiGet',
         _target: [{
-            _ref: "textLayer",
+            _ref: 'textLayer',
             _id: layer.id
         }],
         extendedReference: [
-            ["antiAlias", "boundingBox", "bounds", "kerningRange", "orientation", "paragraphStyleRange", "textGridding", "textKey", "textShape", "textStyleRange", "warp"]
+            ['antiAlias', 'boundingBox', 'bounds', 'kerningRange', 'orientation', 'paragraphStyleRange', 'textGridding', 'textKey', 'textShape', 'textStyleRange', 'warp']
         ],
         options: {
             failOnMissingProperty: false,
@@ -106,13 +106,13 @@ const setRichTextForLayer = async (text, layer) => {
         // Perform a deep copy of the default style to avoid modifying the same reference
         var componentStyle = JSON.parse(JSON.stringify(defaultTextStyle));
 
-        componentStyle['_obj'] = "textStyleRange";
+        componentStyle['_obj'] = 'textStyleRange';
         componentStyle['from'] = offset;
         componentStyle['to'] = offset + component.length;
 
-        componentStyle['textStyle'].fontName = "SF Pro Display";
-        componentStyle['textStyle'].fontPostScriptName = isBold ? "SFProDisplay-Bold" : "SFProDisplay-Regular";
-        componentStyle['textStyle'].fontStyleName = isBold ? "Bold" : "Regular";
+        componentStyle['textStyle'].fontName = 'SF Pro Display';
+        componentStyle['textStyle'].fontPostScriptName = isBold ? 'SFProDisplay-Bold' : 'SFProDisplay-Regular';
+        componentStyle['textStyle'].fontStyleName = isBold ? 'Bold' : 'Regular';
 
         textStyleRanges.push(componentStyle);
 
@@ -126,9 +126,9 @@ const setRichTextForLayer = async (text, layer) => {
     properties.textStyleRange = textStyleRanges;
 
     let command = {
-        _obj: "set",
+        _obj: 'set',
         _target: [{
-            _ref: "textLayer",
+            _ref: 'textLayer',
             _id: layer.id
         }],
         to: properties

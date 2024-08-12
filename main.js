@@ -1,4 +1,5 @@
-const app = require('photoshop').app;
+const photoshop = require('photoshop');
+const app = photoshop.app;
 
 const { entrypoints } = require('uxp');
 
@@ -17,11 +18,11 @@ entrypoints.setup({
     }
 });
 
-// The action to perform when the user clicks the "Create Guides" button
+// The action to perform when the user clicks the 'Create Guides' button
 const createGuides = async () => {
 
-    await createGuide("horizontal", 0);
-    await createGuide("horizontal", app.activeDocument.height);
+    await createGuide('horizontal', 0);
+    await createGuide('horizontal', app.activeDocument.height);
 
     const total = ui.getCurrentNumberOfScreenshots();
 
@@ -29,12 +30,12 @@ const createGuides = async () => {
 
     for (var i = 0; i < total + 1; i++) {
 
-        await createGuide("vertical", i * screenshotWidth);
+        await createGuide('vertical', i * screenshotWidth);
 
     }
 }
 
-// The action to perform when the user clicks the "Localize" button
+// The action to perform when the user clicks the 'Localize' button
 const localize = async () => {
 
     ui.disable();
@@ -45,7 +46,7 @@ const localize = async () => {
 
 }
 
-// The action to perform when the user clicks the "Crop & Save" button
+// The action to perform when the user clicks the 'Crop & Save' button
 const cropAndSave = async () => {
 
     const folder = await getDestinationFolder();
@@ -80,7 +81,7 @@ const cropAndSave = async () => {
 
         await snapshot.revertTo(initialSnapshotName);
 
-        //console.warn(`Successfully processed screenshot ${index}`);
+        // console.warn(`Successfully processed screenshot ${index}`);
         console.info(`${index / total * 100}% done`);
 
     }
@@ -92,13 +93,13 @@ const cropAndSave = async () => {
 
 }
 
-document.getElementById("create-guides-button").addEventListener("click", createGuides);
-document.getElementById("load-strings-button").addEventListener("click", strings.load);
-document.getElementById("localize-button").addEventListener("click", localize);
-document.getElementById("crop-save-button").addEventListener("click", cropAndSave);
+document.getElementById('create-guides-button').addEventListener('click', createGuides);
+document.getElementById('load-strings-button').addEventListener('click', strings.load);
+document.getElementById('localize-button').addEventListener('click', localize);
+document.getElementById('crop-save-button').addEventListener('click', cropAndSave);
 
 // Update the screenshot size when the user changes the amount
-document.getElementById("screenshots-amount-input").addEventListener("input", () => {
+document.getElementById('screenshots-amount-input').addEventListener('input', () => {
     ui.updateMeasurements();
 });
 
@@ -113,4 +114,4 @@ var _onHistoryStateChanged = (e, d) => { ui.updateMeasurements(); }
 photoshop.action.addNotificationListener([{ event: "historyStateChanged" }], _onHistoryStateChanged);
 
 // Adds a global event listener to see what actions are being performed at low-level
-// photoshop.action.addNotificationListener(['all'], (event, descriptor) => {console.warn("Event:" + event + " Descriptor: " + JSON.stringify(descriptor))});
+// photoshop.action.addNotificationListener(['all'], (event, descriptor) => { console.warn('Event:' + event + ' Descriptor: ' + JSON.stringify(descriptor)) });
